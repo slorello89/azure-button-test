@@ -38,6 +38,11 @@
               "metadata": {
                   "description":"where you want your server deployed"
               }
+          },
+          "repoUrl":{
+              "type": "string",
+              "defaultValue": " ",
+              "metadata": {"description":"Optional Git Repo URL"}
           }
     },
 	"variables": {
@@ -61,10 +66,34 @@
         },
         {
             "type": "Microsoft.Web/sites",
-            "apiVersion": "2018-11-01",
+            "apiVersion": "2020-06-01",
             "name": "[parameters('webAppName')]",
             "location":"[parameters('location')]",
-            "dependsOn": ["[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanPortalName'))]"]                        
+            "dependsOn": ["[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanPortalName'))]"],
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanPortalName'))]",
+                "siteConfig": {
+                  "linuxFxVersion": "[parameters('linuxFxVersion')]"
+                },
+                "resources": [
+                    {
+                      "condition": "[contains(parameters('repoUrl'),'http')]",
+                      "type": "sourcecontrols",
+                      "apiVersion": "2020-06-01",
+                      "name": "web",
+                      "location": "[parameters('location')]",
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', parameters('webAppName'))]"
+                      ],
+                      "properties": {
+                        "repoUrl": "[parameters('repoUrl')]",
+                        "branch": "master",
+                        "isManualIntegration": true
+                      }
+                    }
+                  ]
+                         
+            }
         }
     ]
   }
