@@ -31,38 +31,40 @@
             "metadata": {
               "description": "The Runtime stack of current web app"
             }
+          },
+          "location":{
+              "type": "string",
+              "defaultValue": "East US",
+              "metadata": {
+                  "description":"where you want your server deployed"
+              }
           }
     },
 	"variables": {
         "webAppPortalName": "[concat(parameters('webAppName'), '-webapp')]",
-        "appServicePlanName": "[concat('AppServicePlan-', parameters('webAppName'))]"
+        "appServicePlanName": "[concat('AppServicePlan-', parameters('webAppName'))]",
+        "appServicePlanPortalName":"[concat('AppServicePlan-',parameters('webAppName'))]"
     },
     "resources": [
         {
-            "type": "Microsoft.Web/sites",
-            "apiVersion": "2018-11-01",
-            "name": "[variables('webAppPortalName')]",
-            "location":"East US",
-            "kind": "app,linux",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2020-06-01",
+            "name": "[variables('appServicePlanPortalName')]",
+            "location":"[parameters('location')]",
             "sku": {
                 "name": "[parameters('sku')]"
             },
+            "kind": "linux",
             "properties": {
-                "reserved": true,
-                "appCommandLine": "dotnet dotnet-skeleton-app.dll"
-            },
-            "resources": [
-                {
-                    "dependsOn":["[variables('webAppPortalName')]"],
-                    "name": "appsettings",
-                    "type": "config",
-                    "apiVersion": "2018-02-01",
-                    "properties": {
-                      "VONAGE_API_KEY": "[parameters('VONAGE_API_KEY')]",
-                      "VONAGE_API_SECRET": "[parameters('VONAGE_API_SECRET')]"
-                    }
-                  }
-            ]
+                "reserved": true             
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('webAppName')]",
+            "location":"[parameters('location')]",
+            "dependsOn": ["[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanPortalName'))]"]                        
         }
     ]
   }
