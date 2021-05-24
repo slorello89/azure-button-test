@@ -94,6 +94,21 @@
                   ]
                          
             }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('webAppName'), '-deployment')]",
+            "location":"[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('webAppName'))]"
+            ],
+            "properties": {                
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "GITHUB_ZIP_DEPLOY",
+                "message": "{\"type\":\"deployment\",\"sha\":\"fc62cc5c9f920195b7bc487da30eec1fc25c838b\",\"repoName\":\"slorello89/azure-button-test\",\"slotName\":\"production\"}"
+            }
         }
     ]
   }
