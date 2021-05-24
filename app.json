@@ -1,0 +1,15 @@
+{
+    "name": "Vonage Dotnet Skeleton App",
+    "description": "A Vonage Dotnet Skeleton App for validating your enviornment and account is setup",
+    "repository": "https://github.com/nexmo/dotnet-skeleton-app",
+    "keywords": ["aspnetcore", "dotnet", "heroku", "nexmo", "vonage"],
+    "buildpacks":["https://github.com/jincod/dotnetcore-buildpack"],
+    "env": {
+      "vonage.apiKey": {
+          "description": "Find your account API key and secret on the dashboard https://dashboard.nexmo.com"
+      },
+      "vonage.apiSecret": {
+          "description": "Find your account API key and secret on the dashboard https://dashboard.nexmo.com"
+      }  
+    }
+  }
